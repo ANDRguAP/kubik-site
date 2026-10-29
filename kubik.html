@@ -515,6 +515,23 @@ footer p { font-size: 0.9rem; color: #cfc8ad; }
   visibility: visible;
   transform: translateY(0);
 }
+
+/* Раздел «Поддержка» */
+.feature a {
+  color: var(--green);
+  font-weight: bold;
+  text-decoration: none;
+  word-break: break-word;
+}
+.feature a:hover {
+  color: var(--orange-dark);
+  text-decoration: underline;
+}
+.feature-note {
+  margin-top: 6px;
+  font-size: 0.9rem;
+  color: #555;
+}
 </style>
 </head>
 <body>
@@ -697,6 +714,33 @@ footer p { font-size: 0.9rem; color: #cfc8ad; }
             <div class="avatar" aria-hidden="true">👩‍🦰</div>
             <div><b>Мария, 25 лет</b><small>дизайнер</small><div class="stars" aria-label="5 из 5">★★★★★</div></div>
           </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="support">
+    <div class="container">
+      <h2>Поддержка</h2>
+      <p class="section-sub">Вопросы по бронированию, оплате и правилам клуба — мы на связи.</p>
+      <div class="cards-3">
+        <article class="feature">
+          <span class="emoji" aria-hidden="true">📞</span>
+          <h3>Телефон</h3>
+          <p><a href="tel:+78125550123">+7 (812) 555-01-23</a></p>
+          <p class="feature-note">Ежедневно с 14:00 до 23:00</p>
+        </article>
+        <article class="feature">
+          <span class="emoji" aria-hidden="true">✉️</span>
+          <h3>Электронная почта</h3>
+          <p><a href="mailto:support@kubik.example">support@kubik.example</a></p>
+          <p class="feature-note">Отвечаем в течение 2 часов</p>
+        </article>
+        <article class="feature">
+          <span class="emoji" aria-hidden="true">💬</span>
+          <h3>Мессенджеры</h3>
+          <p>Telegram и WhatsApp:<br><a href="https://t.me/kubik_support">@kubik_support</a></p>
+          <p class="feature-note">Самый быстрый способ связи</p>
         </article>
       </div>
     </div>
