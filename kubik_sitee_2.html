@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Кубик — клуб настольных игр в Санкт-Петербурге</title>
+<meta name="description" content="Клуб настольных игр «Кубик» в Санкт-Петербурге: 200+ игр, опытные ведущие, уютное пространство. Запишитесь на игровой вечер!">
+<style>
+:root {
+  --green-dark: #1f3a5f;   /* был #17402f — глубокий синий */
+  --green: #27496d;        /* был #1f5a42 */
+  --green-light: #345d84;  /* был #2c7358 */
+  --cream: #f7f0dc;
+  --cream-dark: #ece1c1;
+  --orange: #f28c28;
+  --orange-dark: #d9721a;
+  --text: #2b2b2b;
+  --radius: 16px;
+  --shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: Arial, sans-serif;
+  color: var(--text);
+  background: var(--cream);
+  line-height: 1.6;
+}
+
+.container {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+section { padding: 72px 0; scroll-margin-top: 64px; }
+
+h1, h2, h3 { line-height: 1.2; }
+
+h2 {
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 12px;
+  color: var(--green-dark);
+}
+
+.section-sub {
+  text-align: center;
+  max-width: 620px;
+  margin: 0 auto 40px;
+  color: #555;
+}
+
+/* Buttons */
+.btn {
+  display: inline-block;
+  background: var(--orange);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 14px 32px;
+  font-family: Arial, sans-serif;
+  font-size: 1rem;
+  font-weight: bold;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 4px 0 var(--orange-dark);
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+}
+.btn:hover {
+  background: #ff9a3a;
+  transform: translateY(-3px);
+  box-shadow: 0 7px 0 var(--orange-dark);
+}
+.btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 var(--orange-dark);
+}
+
+/* Header */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--green-dark);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 64px;
+}
+.logo {
+  color: var(--cream);
+  font-size: 1.6rem;
+  font-weight: bold;
+  text-decoration: none;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+.logo span { color: var(--orange); }
+
+nav ul {
+  display: flex;
+  gap: 6px;
+  list-style: none;
+}
+nav a {
+  display: block;
+  color: var(--cream);
+  text-decoration: none;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  transition: background 0.2s, color 0.2s;
+}
+nav a:hover {
+  background: var(--orange);
+  color: #fff;
+}
+
+/* Hero */
+.hero {
+  background:
+    radial-gradient(circle at 20% 20%, var(--green-light), transparent 55%),
+    var(--green);
+  color: var(--cream);
+  padding: 90px 0;
+  overflow: hidden;
+}
+.hero-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+}
+.hero-text { flex: 1 1 55%; }
+.hero h1 { font-size: 2.8rem; margin-bottom: 18px; }
+.hero h1 em { font-style: normal; color: var(--orange); }
+.hero p { font-size: 1.15rem; margin-bottom: 30px; max-width: 520px; color: #e9e2c8; }
+
+.hero-art {
+  flex: 1 1 35%;
+  display: flex;
+  justify-content: center;
+}
+
+/* CSS dice */
+.dice-scene {
+  position: relative;
+  width: 280px;
+  height: 260px;
+}
+.die {
+  position: absolute;
+  background: var(--cream);
+  border-radius: 22px;
+  box-shadow: 0 10px 0 var(--cream-dark), 0 18px 30px rgba(0, 0, 0, 0.35);
+  display: grid;
+  padding: 16px;
+  transition: transform 0.4s;
+}
+.die i {
+  width: 100%;
+  height: 100%;
+  background: var(--green-dark);
+  border-radius: 50%;
+  display: block;
+}
+.die.d6 {
+  width: 150px;
+  height: 150px;
+  left: 10px;
+  top: 40px;
+  transform: rotate(-12deg);
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 8px;
+}
+.die.d6 i { width: 80%; height: 80%; place-self: center; }
+.die.d6 i:nth-child(1) { grid-area: 1 / 1; }
+.die.d6 i:nth-child(2) { grid-area: 1 / 3; }
+.die.d6 i:nth-child(3) { grid-area: 2 / 1; }
+.die.d6 i:nth-child(4) { grid-area: 2 / 3; }
+.die.d6 i:nth-child(5) { grid-area: 3 / 1; }
+.die.d6 i:nth-child(6) { grid-area: 3 / 3; }
+.die.d5 {
+  width: 120px;
+  height: 120px;
+  right: 0;
+  bottom: 10px;
+  background: var(--orange);
+  box-shadow: 0 10px 0 var(--orange-dark), 0 18px 30px rgba(0, 0, 0, 0.35);
+  transform: rotate(14deg);
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 4px;
+  padding: 14px;
+}
+.die.d5 i { background: var(--cream); width: 85%; height: 85%; place-self: center; }
+.die.d5 i:nth-child(1) { grid-area: 1 / 1; }
+.die.d5 i:nth-child(2) { grid-area: 1 / 3; }
+.die.d5 i:nth-child(3) { grid-area: 2 / 2; }
+.die.d5 i:nth-child(4) { grid-area: 3 / 1; }
+.die.d5 i:nth-child(5) { grid-area: 3 / 3; }
+.dice-scene:hover .d6 { transform: rotate(8deg) translateY(-8px); }
+.dice-scene:hover .d5 { transform: rotate(-6deg) translateY(-8px); }
+
+/* About */
+.about-text {
+  max-width: 760px;
+  margin: 0 auto 44px;
+  text-align: center;
+  font-size: 1.08rem;
+}
+.cards-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.feature {
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 32px 24px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  border-top: 5px solid var(--orange);
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+.feature:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.2);
+}
+.feature .emoji { font-size: 3rem; display: block; margin-bottom: 12px; }
+.feature h3 { color: var(--green-dark); margin-bottom: 8px; }
+
+/* Games */
+.games { background: var(--green-dark); }
+.games h2 { color: var(--cream); }
+.games .section-sub { color: #cfc8ad; }
+.games-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.game {
+  background: var(--cream);
+  border-radius: var(--radius);
+  padding: 26px 22px;
+  box-shadow: var(--shadow);
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+.game:hover {
+  transform: translateY(-8px) rotate(-1deg);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.4);
+}
+.game .emoji { font-size: 2.6rem; }
+.game h3 { margin: 8px 0; color: var(--green-dark); }
+.game .meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.game .meta span {
+  background: var(--orange);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: bold;
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+.game p { font-size: 0.95rem; }
+
+/* Pricing */
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  align-items: stretch;
+}
+.plan {
+  position: relative;
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 34px 24px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+.plan:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.2);
+}
+.plan.popular {
+  background: var(--green);
+  color: var(--cream);
+  border: 3px solid var(--orange);
+}
+.plan.popular h3, .plan.popular .price { color: var(--cream); }
+.badge {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--orange);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: bold;
+  padding: 4px 16px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.plan h3 { color: var(--green-dark); font-size: 1.3rem; }
+.price {
+  font-size: 2.6rem;
+  font-weight: bold;
+  color: var(--orange-dark);
+  margin: 12px 0;
+}
+.price small { font-size: 1rem; font-weight: normal; }
+.plan ul {
+  list-style: none;
+  margin-bottom: 24px;
+  flex-grow: 1;
+}
+.plan li { padding: 6px 0; border-bottom: 1px dashed rgba(0, 0, 0, 0.15); }
+.plan.popular li { border-color: rgba(255, 255, 255, 0.25); }
+
+.schedule {
+  margin: 44px auto 0;
+  max-width: 640px;
+  background: var(--cream-dark);
+  border-radius: var(--radius);
+  padding: 26px;
+  text-align: center;
+}
+.schedule h3 { color: var(--green-dark); margin-bottom: 12px; }
+.schedule table { width: 100%; border-collapse: collapse; }
+.schedule td { padding: 8px; border-bottom: 1px solid rgba(0, 0, 0, 0.12); }
+.schedule td:last-child { text-align: right; font-weight: bold; }
+.schedule tr:last-child td { border-bottom: none; }
+
+/* Reviews */
+.reviews { background: var(--cream-dark); }
+.review {
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 28px 24px;
+  box-shadow: var(--shadow);
+  position: relative;
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+.review:hover { transform: translateY(-6px); box-shadow: 0 14px 28px rgba(0, 0, 0, 0.2); }
+.review::before {
+  content: "“";
+  position: absolute;
+  top: 0;
+  left: 16px;
+  font-size: 4rem;
+  color: var(--orange);
+  line-height: 1;
+}
+.review p { margin-top: 20px; font-style: italic; }
+.author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 18px;
+}
+.avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+}
+.author b { display: block; color: var(--green-dark); }
+.author small { color: #777; }
+.stars { color: var(--orange); letter-spacing: 2px; }
+
+/* Contacts */
+.contacts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  align-items: start;
+}
+.contact-info, .form-box {
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 32px 28px;
+  box-shadow: var(--shadow);
+}
+.contact-info h3, .form-box h3 { color: var(--green-dark); margin-bottom: 18px; }
+.contact-info p { margin-bottom: 14px; }
+.contact-info a { color: var(--green); font-weight: bold; text-decoration: none; }
+.contact-info a:hover { color: var(--orange-dark); text-decoration: underline; }
+
+label { display: block; font-weight: bold; margin-bottom: 6px; color: var(--green-dark); }
+input {
+  width: 100%;
+  padding: 13px 16px;
+  margin-bottom: 18px;
+  border: 2px solid var(--cream-dark);
+  border-radius: 12px;
+  font-family: Arial, sans-serif;
+  font-size: 1rem;
+  background: var(--cream);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+input:hover { border-color: #d8c99a; }
+input:focus {
+  outline: none;
+  border-color: var(--orange);
+  box-shadow: 0 0 0 3px rgba(242, 140, 40, 0.25);
+}
+.form-box .btn { width: 100%; }
+.form-msg {
+  display: none;
+  margin-top: 16px;
+  padding: 12px;
+  border-radius: 12px;
+  background: #e3f3e8;
+  color: var(--green-dark);
+  text-align: center;
+  font-weight: bold;
+}
+
+/* Footer */
+footer {
+  background: var(--green-dark);
+  color: var(--cream);
+  text-align: center;
+  padding: 36px 20px;
+}
+footer .logo { display: inline-block; margin-bottom: 8px; }
+footer p { font-size: 0.9rem; color: #cfc8ad; }
+
+/* Tablet */
+@media (max-width: 900px) {
+  .cards-3, .games-grid, .pricing-grid { grid-template-columns: repeat(2, 1fr); }
+  .hero h1 { font-size: 2.3rem; }
+}
+
+/* Mobile */
+@media (max-width: 700px) {
+  section { padding: 52px 0; scroll-margin-top: 108px; }
+  h2 { font-size: 1.6rem; }
+
+  .header-inner { flex-direction: column; gap: 0; padding-top: 8px; }
+  nav { width: 100%; overflow-x: auto; }
+  nav ul { justify-content: flex-start; padding-bottom: 8px; min-width: max-content; }
+  nav a { padding: 6px 12px; font-size: 0.9rem; }
+
+  .hero { padding: 56px 0; }
+  .hero-inner { flex-direction: column; text-align: center; }
+  .hero h1 { font-size: 1.9rem; }
+  .hero p { margin-left: auto; margin-right: auto; }
+
+  .cards-3, .games-grid, .pricing-grid, .contacts-grid { grid-template-columns: 1fr; }
+  .plan { margin-top: 10px; }
+}
+
+/* Hover-эффект для кнопок и карточек */
+.btn,
+.feature,
+.game,
+.plan,
+.review {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.btn:hover,
+.feature:hover,
+.game:hover,
+.plan:hover,
+.review:hover {
+  transform: scale(1.04);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.2);
+}
+
+/* Кнопка «Наверх» */
+.to-top {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  width: 48px;
+  height: 48px;
+  border: none;
+  border-radius: 50%;
+  background: var(--orange);
+  color: #fff;
+  font-size: 1.4rem;
+  cursor: pointer;
+  box-shadow: 0 4px 0 var(--orange-dark);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(12px);
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+  z-index: 200;
+}
+.to-top.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* Раздел «Поддержка» */
+.feature a {
+  color: var(--green);
+  font-weight: bold;
+  text-decoration: none;
+  word-break: break-word;
+}
+.feature a:hover {
+  color: var(--orange-dark);
+  text-decoration: underline;
+}
+.feature-note {
+  margin-top: 6px;
+  font-size: 0.9rem;
+  color: #555;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container header-inner">
+    <a href="#home" class="logo">Ку<span>б</span>ик</a>
+    <nav aria-label="Основная навигация">
+      <ul>
+        <li><a href="#home">Главная</a></li>
+        <li><a href="#about">О клубе</a></li>
+        <li><a href="#games">Игры</a></li>
+        <li><a href="#prices">Цены</a></li>
+        <li><a href="#reviews">Отзывы</a></li>
+        <li><a href="#contacts">Контакты</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero" id="home">
+    <div class="container hero-inner">
+      <div class="hero-text">
+        <h1>Собирайся с друзьями — <em>играй с удовольствием!</em></h1>
+        <p>Уютный клуб настольных игр в центре Санкт-Петербурга: чай, мягкие диваны, сотни игр и ведущие, которые объяснят правила за пять минут.</p>
+        <a href="#contacts" class="btn">Записаться на игровой вечер</a>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="dice-scene">
+          <div class="die d6"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="die d5"><i></i><i></i><i></i><i></i><i></i></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="about">
+    <div class="container">
+      <h2>О клубе</h2>
+      <p class="about-text">«Кубик» — это место, где вечер с друзьями превращается в приключение. Мы открылись для тех, кто устал от бесконечного скроллинга и хочет живого общения. Новичкам мы подберём игру под настроение и компанию, а опытные игроки найдут новинки и соперников. Приходите вдвоём, с друзьями или одни — за нашим столом всегда найдётся место.</p>
+      <div class="cards-3">
+        <article class="feature">
+          <span class="emoji" aria-hidden="true">🎲</span>
+          <h3>200+ игр</h3>
+          <p>От классических «Каркассона» и «Монополии» до свежих новинок и party-игр для большой компании.</p>
+        </article>
+        <article class="feature">
+          <span class="emoji" aria-hidden="true">🧑‍🏫</span>
+          <h3>Опытные ведущие</h3>
+          <p>Расскажем правила простыми словами, поможем с выбором и подключимся к партии, если не хватает игроков.</p>
+        </article>
+        <article class="feature">
+          <span class="emoji" aria-hidden="true">🛋️</span>
+          <h3>Уютное пространство</h3>
+          <p>Тёплый свет, мягкие диваны, чай и печенье — здесь хочется остаться подольше.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="games" id="games">
+    <div class="container">
+      <h2>Наши игры</h2>
+      <p class="section-sub">Несколько любимчиков наших гостей. Полный каталог — в клубе.</p>
+      <div class="games-grid">
+        <article class="game">
+          <div class="emoji" aria-hidden="true">🏰</div>
+          <h3>Каркассон</h3>
+          <div class="meta"><span>2–5 игроков</span><span>30–45 мин</span></div>
+          <p>Выкладывайте тайлы, стройте города и дороги и расставляйте подданных, чтобы набрать больше очков.</p>
+        </article>
+        <article class="game">
+          <div class="emoji" aria-hidden="true">🏝️</div>
+          <h3>Колонизаторы</h3>
+          <div class="meta"><span>3–4 игрока</span><span>60–90 мин</span></div>
+          <p>Торгуйте ресурсами, стройте поселения и дороги и боритесь за звание хозяина острова.</p>
+        </article>
+        <article class="game">
+          <div class="emoji" aria-hidden="true">🕵️</div>
+          <h3>Мафия</h3>
+          <div class="meta"><span>6–15 игроков</span><span>20–40 мин</span></div>
+          <p>Классика для шумной компании: вычислите мафию днём, пока она «работает» ночью.</p>
+        </article>
+        <article class="game">
+          <div class="emoji" aria-hidden="true">🚂</div>
+          <h3>Билет на поезд</h3>
+          <div class="meta"><span>2–5 игроков</span><span>45–60 мин</span></div>
+          <p>Собирайте вагоны, прокладывайте железнодорожные маршруты и соединяйте города раньше соперников.</p>
+        </article>
+        <article class="game">
+          <div class="emoji" aria-hidden="true">🗣️</div>
+          <h3>Имаджинариум</h3>
+          <div class="meta"><span>3–7 игроков</span><span>30–40 мин</span></div>
+          <p>Загадывайте ассоциации по картинкам и угадывайте мысли друзей — весело и без сложных правил.</p>
+        </article>
+        <article class="game">
+          <div class="emoji" aria-hidden="true">🐉</div>
+          <h3>Манчкин</h3>
+          <div class="meta"><span>3–6 игроков</span><span>40–60 мин</span></div>
+          <p>Юмористическая карточная игра: убивайте монстров, собирайте шмот и подставляйте друзей.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="prices">
+    <div class="container">
+      <h2>Цены и расписание</h2>
+      <p class="section-sub">Выберите формат, который подходит вам. Чай и печенье — бесплатно.</p>
+      <div class="pricing-grid">
+        <article class="plan">
+          <h3>Час игры</h3>
+          <div class="price">150 ₽<small> / час</small></div>
+          <ul>
+            <li>Любая игра из коллекции</li>
+            <li>Стоимость — с человека</li>
+            <li>Чай и печенье</li>
+            <li>Помощь ведущего с правилами</li>
+          </ul>
+          <a href="#contacts" class="btn">Выбрать</a>
+        </article>
+        <article class="plan popular">
+          <span class="badge">Выбор гостей</span>
+          <h3>Игровой вечер</h3>
+          <div class="price">500 ₽<small> / вечер</small></div>
+          <ul>
+            <li>Безлимит по времени с 18:00</li>
+            <li>Ведущий за вашим столом</li>
+            <li>Чай, кофе и печенье</li>
+            <li>Бронь стола заранее</li>
+          </ul>
+          <a href="#contacts" class="btn">Выбрать</a>
+        </article>
+        <article class="plan">
+          <h3>Компания друзей</h3>
+          <div class="price">2 500 ₽<small> / вечер</small></div>
+          <ul>
+            <li>Отдельный стол до 8 человек</li>
+            <li>Безлимит по времени</li>
+            <li>Ведущий и подбор игр</li>
+            <li>Подходит для дня рождения</li>
+          </ul>
+          <a href="#contacts" class="btn">Выбрать</a>
+        </article>
+      </div>
+      <div class="schedule">
+        <h3>🕒 Часы работы</h3>
+        <table>
+          <tr><td>Понедельник – четверг</td><td>16:00 – 23:00</td></tr>
+          <tr><td>Пятница – суббота</td><td>14:00 – 02:00</td></tr>
+          <tr><td>Воскресенье</td><td>14:00 – 22:00</td></tr>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="reviews" id="reviews">
+    <div class="container">
+      <h2>Отзывы</h2>
+      <p class="section-sub">Что говорят о нас гости клуба.</p>
+      <div class="cards-3">
+        <article class="review">
+          <p>Пришли с друзьями на день рождения — ведущий подобрал игры и объяснил всё так, что через десять минут уже играли. Отличный вечер!</p>
+          <div class="author">
+            <div class="avatar" aria-hidden="true">👩</div>
+            <div><b>Анна, 22 года</b><small>студентка</small><div class="stars" aria-label="5 из 5">★★★★★</div></div>
+          </div>
+        </article>
+        <article class="review">
+          <p>Уютно, чисто и не шумно. Люблю приходить после работы, чтобы отвлечься. Игр много, каждый раз пробую что-то новое.</p>
+          <div class="author">
+            <div class="avatar" aria-hidden="true">👨</div>
+            <div><b>Дмитрий, 27 лет</b><small>разработчик</small><div class="stars" aria-label="5 из 5">★★★★★</div></div>
+          </div>
+        </article>
+        <article class="review">
+          <p>Пришла одна, а ушла с новыми друзьями: ведущие сажают за стол с такими же новичками. Теперь ходим каждую неделю.</p>
+          <div class="author">
+            <div class="avatar" aria-hidden="true">👩‍🦰</div>
+            <div><b>Мария, 25 лет</b><small>дизайнер</small><div class="stars" aria-label="5 из 5">★★★★★</div></div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="support">
+    <div class="container">
+      <h2>Поддержка</h2>
+      <p class="section-sub">Вопросы по бронированию, оплате и правилам клуба — мы на связи.</p>
+      <div class="cards-3">
+        <article class="feature">
+          <span class="emoji" aria-hidden="true">📞</span>
+          <h3>Телефон</h3>
+          <p><a href="tel:+78125550123">+7 (812) 555-01-23</a></p>
+          <p class="feature-note">Ежедневно с 14:00 до 23:00</p>
+        </article>
+        <article class="feature">
+          <span class="emoji" aria-hidden="true">✉️</span>
+          <h3>Электронная почта</h3>
+          <p><a href="mailto:support@kubik.example">support@kubik.example</a></p>
+          <p class="feature-note">Отвечаем в течение 2 часов</p>
+        </article>
+        <article class="feature">
+          <span class="emoji" aria-hidden="true">💬</span>
+          <h3>Мессенджеры</h3>
+          <p>Telegram и WhatsApp:<br><a href="https://t.me/kubik_support">@kubik_support</a></p>
+          <p class="feature-note">Самый быстрый способ связи</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="contacts">
+    <div class="container">
+      <h2>Контакты</h2>
+      <p class="section-sub">Оставьте заявку — мы перезвоним и забронируем стол.</p>
+      <div class="contacts-grid">
+        <div class="contact-info">
+          <h3>Как нас найти</h3>
+          <p>📍 <b>Адрес:</b><br>Санкт-Петербург, Невский проспект, 100 (вход со двора)</p>
+          <p>📞 <b>Телефон:</b><br><a href="tel:+78125550123">+7 (812) 555-01-23</a></p>
+          <p>🕒 <b>Часы работы:</b><br>Пн–Чт 16:00–23:00<br>Пт–Сб 14:00–02:00<br>Вс 14:00–22:00</p>
+        </div>
+        <div class="form-box">
+          <h3>Хочу на игровой вечер</h3>
+          <form id="contact-form">
+            <label for="name">Имя</label>
+            <input type="text" id="name" name="name" placeholder="Как вас зовут?" required>
+            <label for="phone">Телефон</label>
+            <input type="tel" id="phone" name="phone" placeholder="+7 (___) ___-__-__" required>
+            <button type="submit" class="btn">Хочу играть</button>
+            <div class="form-msg" id="form-msg" role="status">Спасибо! Мы скоро свяжемся с вами 🎲</div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <a href="#home" class="logo">Ку<span>б</span>ик</a>
+  <p>Клуб настольных игр · Санкт-Петербург</p>
+  <p>© 2026 «Кубик». Все права защищены.</p>
+</footer>
+
+<script>
+  document.getElementById('contact-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    document.getElementById('form-msg').style.display = 'block';
+    this.reset();
+  });
+</script>
+
+<button type="button" id="to-top" class="to-top" aria-label="Наверх">↑</button>
+
+<script>
+  var toTop = document.getElementById('to-top');
+  window.addEventListener('scroll', function () {
+    toTop.classList.toggle('is-visible', window.scrollY > 400);
+  }, { passive: true });
+  toTop.addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+</script>
+</body>
+</html>
