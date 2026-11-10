@@ -1,0 +1,48 @@
+# Workflow: проверка HTML (линтинг) и автоматическая публикация сайта «Кубик».
+# Файл размещается в репозитории по пути: .github/workflows/deploy.yml
+
+name: Lint and deploy   # название workflow (видно на вкладке Actions)
+
+# Запускается при каждом push в ветку main
+on:
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  # Задание 1: проверка HTML. Если найдены ошибки – задание падает, публикации не будет
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check HTML
+        run: python3 check_html.py
+
+  # Задание 2: публикация. Запускается только после успешной проверки (needs: lint)
+  deploy:
+    needs: lint
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
